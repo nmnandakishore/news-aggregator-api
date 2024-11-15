@@ -16,8 +16,13 @@ class News extends Model
         'provider' =>'required',
         'language' =>'string',
         'author' =>'string',
-        'content' =>'required|string'
+        'content' =>'required|string',
+        'category' => 'required|string',
+        'source' =>'string',
     ];
+
+    protected $fillable = ['title','description','image','url','tags','provider','language','author','content','category','source'];
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);

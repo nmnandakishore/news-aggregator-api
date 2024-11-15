@@ -24,8 +24,8 @@ return new class extends Migration
             $table->string("language");
             $table->string("tags");
 
-            $table->bigInteger("category");
-            $table->bigInteger("source");
+            $table->string("category");
+            $table->string("source");
 
             $table->foreign("category")->references("name")->on("categories");
             $table->foreign("source")->references("name")->on("sources");
