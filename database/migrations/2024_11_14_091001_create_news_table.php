@@ -18,16 +18,17 @@ return new class extends Migration
             $table->string("description");
             $table->string("image");
             $table->string("url");
-            $table->string("tags");
+            $table->string("content");
+            $table->string("author");
             $table->string("provider");
             $table->string("language");
-            $table->string("author");
-            $table->string("content");
+            $table->string("tags");
+
             $table->bigInteger("category");
             $table->bigInteger("source");
 
-            $table->foreign("category")->references("id")->on("categories");
-            $table->foreign("source")->references("id")->on("sources");
+            $table->foreign("category")->references("name")->on("categories");
+            $table->foreign("source")->references("name")->on("sources");
         });
     }
 

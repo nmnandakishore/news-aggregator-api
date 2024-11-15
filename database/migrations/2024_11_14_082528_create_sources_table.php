@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('sources', function (Blueprint $table) {
-            $table->id()->autoIncrement()->primary();
             $table->timestamps();
-            $table->string('name');
+            $table->string('name')->unique()->primary();
         });
     }
 
