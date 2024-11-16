@@ -14,21 +14,22 @@ return new class extends Migration
         Schema::create('news', function (Blueprint $table) {
             $table->id()->autoIncrement();
             $table->timestamps();
-            $table->string("title");
-            $table->string("description");
-            $table->string("image");
-            $table->string("url");
-            $table->string("content");
-            $table->string("author");
+            $table->text("title");
+            $table->text("description")->nullable();
+            $table->text("image")->nullable();
+            $table->text("url");
+            $table->text("content");
+            $table->string("author")->nullable();
             $table->string("provider");
-            $table->string("language");
-            $table->string("tags");
-
+            $table->string("language")->nullable();
+            $table->string("tags")->nullable();
+            $table->string("country")->nullable();
+            $table->datetime("published_at")->nullable();
             $table->string("category");
-            $table->string("source");
+            $table->string("source")->nullable();
 
-            $table->foreign("category")->references("name")->on("categories");
-            $table->foreign("source")->references("name")->on("sources");
+//            $table->foreign("category")->references("name")->on("categories");
+//            $table->foreign("source")->references("name")->on("sources");
         });
     }
 

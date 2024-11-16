@@ -7,23 +7,31 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class News extends Model
 {
+    /**
+     * @var array|string[]
+     */
     protected array $rules = [
-        'title' =>'required|string',
-        'description' =>'string',
-        'image' =>'string',
-        'url' =>'required|string',
+        'title' =>'required|text',
+        'url' =>'required|text',
+        'provider' =>'required|string',
+        'content' =>'required|text',
+        'category' => 'required|string',
+        'description' =>'text',
+        'image' =>'text',
         'tags' =>'string',
-        'provider' =>'required',
         'language' =>'string',
         'author' =>'string',
-        'content' =>'required|string',
-        'category' => 'required|string',
         'source' =>'string',
+        'published_at' => 'string',
+        'country' => 'string'
     ];
 
-    protected $fillable = ['title','description','image','url','tags','provider','language','author','content','category','source'];
+    /**
+     * @var string[]
+     */
+    protected $fillable = ['title','description','image','url','tags','provider', 'author','content','category','source', 'published_at', 'country'];
 
-    public function category(): BelongsTo
+   /* public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
@@ -31,6 +39,6 @@ class News extends Model
     public function source(): BelongsTo
     {
         return $this->belongsTo(Source::class);
-    }
+    }*/
 
 }
