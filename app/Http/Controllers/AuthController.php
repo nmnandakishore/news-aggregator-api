@@ -22,15 +22,15 @@ class AuthController extends Controller
     private Auth $auth;
     private Password $password;
     private ValidationService $validationService;
-    private ResponseService $response;
+    private ResponseService $responseService;
 
-    public function __construct(Auth $auth, ValidationService $validationService, UserService $userService, Password $password, ResponseService $response)
+    public function __construct(Auth $auth, ValidationService $validationService, UserService $userService, Password $password, ResponseService $responseService)
     {
         $this->userService = $userService;
         $this->auth = $auth;
         $this->password = $password;
         $this->validationService = $validationService;
-        $this->response = $response;
+        $this->responseService = $responseService;
     }
 
     /**
@@ -44,7 +44,7 @@ class AuthController extends Controller
         try {
             $this->validationService->validate($request->all(), User::$createRules);
             $user = $this->userService->create($request->name, $request->email, $request->password);
-            return $this->response->sendJson('User created');
+            return $this->responseService->sendJson('User created');
         } catch (\Exception $exception) {
             throw $exception;
         }
@@ -64,7 +64,7 @@ class AuthController extends Controller
 
             if (Auth::attempt($request->only('email', 'password'))) {
                 $apiToken = $request->user()->createToken('api_token')->plainTextToken;
-                return $this->response->sendJson('User logged in', ['api_token' => $apiToken]);
+                return $this->responseService->sendJson('User logged in', ['api_token' => $apiToken]);
             } else {
                 throw(new AuthenticationException("Invalid credentials"));
             }
@@ -84,7 +84,7 @@ class AuthController extends Controller
     {
         try {
             $request->user()->currentAccessToken()->delete();
-            return $this->response->sendJson('User logged out');
+            return $this->responseService->sendJson('User logged out');
         } catch (\Exception $exception) {
            throw $exception;
         }
@@ -103,7 +103,7 @@ class AuthController extends Controller
             $status = Password::sendResetLink($request->only('email'));
 
             if ($status === Password::RESET_LINK_SENT) {
-                return $this->response->sendJson('Password reset link sent');
+                return $this->responseService->sendJson('Password reset link sent');
             } else {
                 throw new \Exception("Error sending Password reset link");
             }
@@ -132,7 +132,7 @@ class AuthController extends Controller
                     $user->save();
                 });
             if ($status === Password::PASSWORD_RESET) {
-                return $this->response->sendJson('Password updated');
+                return $this->responseService->sendJson('Password updated');
             } elseif ($status === Password::INVALID_TOKEN){
                 throw new InvalidParameterException("Invalid reset token");
             } else {
