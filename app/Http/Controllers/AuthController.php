@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\ResponseService;
 use App\Services\UserService;
 use App\Services\ValidationService;
+use Symfony\Component\Routing\Exception\InvalidParameterException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,13 +22,15 @@ class AuthController extends Controller
     private Auth $auth;
     private Password $password;
     private ValidationService $validationService;
+    private ResponseService $response;
 
-    public function __construct(Auth $auth, ValidationService $validationService, UserService $userService, Password $password)
+    public function __construct(Auth $auth, ValidationService $validationService, UserService $userService, Password $password, ResponseService $response)
     {
         $this->userService = $userService;
         $this->auth = $auth;
         $this->password = $password;
         $this->validationService = $validationService;
+        $this->response = $response;
     }
 
     /**
@@ -39,11 +43,8 @@ class AuthController extends Controller
     {
         try {
             $this->validationService->validate($request->all(), User::$createRules);
-
             $user = $this->userService->create($request->name, $request->email, $request->password);
-            return response()->json([
-                'message' => 'User created',
-            ]);
+            return $this->response->sendJson('User created');
         } catch (\Exception $exception) {
             throw $exception;
         }
@@ -63,10 +64,7 @@ class AuthController extends Controller
 
             if (Auth::attempt($request->only('email', 'password'))) {
                 $apiToken = $request->user()->createToken('api_token')->plainTextToken;
-                return response()->json([
-                    'message' => 'User logged in',
-                    'api_token' => $apiToken,
-                ]);
+                return $this->response->sendJson('User logged in', ['api_token' => $apiToken]);
             } else {
                 throw(new AuthenticationException("Invalid credentials"));
             }
@@ -86,9 +84,7 @@ class AuthController extends Controller
     {
         try {
             $request->user()->currentAccessToken()->delete();
-            return response()->json([
-                'message' => 'User logged out'
-            ]);
+            return $this->response->sendJson('User logged out');
         } catch (\Exception $exception) {
            throw $exception;
         }
@@ -107,9 +103,7 @@ class AuthController extends Controller
             $status = Password::sendResetLink($request->only('email'));
 
             if ($status === Password::RESET_LINK_SENT) {
-                return response()->json([
-                    'message' => "Password reset link sent"
-                ]);
+                return $this->response->sendJson('Password reset link sent');
             } else {
                 throw new \Exception("Error sending Password reset link");
             }
@@ -138,11 +132,9 @@ class AuthController extends Controller
                     $user->save();
                 });
             if ($status === Password::PASSWORD_RESET) {
-                return response()->json([
-                    'message' => "Password updated"
-                ]);
+                return $this->response->sendJson('Password updated');
             } elseif ($status === Password::INVALID_TOKEN){
-                throw new ValidationException ("Invalid reset token");
+                throw new InvalidParameterException("Invalid reset token");
             } else {
                 throw new \Exception("Error resetting password");
             }

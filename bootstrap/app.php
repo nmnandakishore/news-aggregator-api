@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -71,6 +72,13 @@ return Application::configure(basePath: dirname(__DIR__))
             return response()->json([
                 'error' => 'Unprocessable',
                 'message' => $exception->errors()
+            ], 422);
+        });
+
+        $exceptions->render(function (InvalidParameterException $exception, Request $request) {
+            return response()->json([
+                'error' => 'Unprocessable',
+                'message' => $exception->getMessage()
             ], 422);
         });
 
