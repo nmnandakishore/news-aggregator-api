@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use mysql_xdevapi\Exception;
 
 class AuthController extends Controller
 {
@@ -45,10 +44,8 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'User created',
             ]);
-        } catch (ValidationException $e) {
-            return response()->json([
-                'errors' => $e->errors()
-            ], 422);
+        } catch (\Exception $exception) {
+            throw $exception;
         }
     }
 
@@ -56,6 +53,8 @@ class AuthController extends Controller
      * Login user with email and password
      * @param Request $request
      * @return JsonResponse
+     * @throws AuthenticationException
+     * @throws ValidationException
      */
     public function login(Request $request): JsonResponse
     {
@@ -71,13 +70,9 @@ class AuthController extends Controller
             } else {
                 throw(new AuthenticationException("Invalid credentials"));
             }
-        } catch (ValidationException $e) {
-            return response()->json([
-                'errors' => $e->errors()
-            ], 422);
-        } catch (\Throwable $exception) {
-            // TODO: Handle exceptions in a middleware and send appropriate responses
-            return response()->json([$exception->getMessage()], 500);
+
+        } catch (\Exception $exception) {
+            throw $exception;
         }
     }
 
@@ -85,6 +80,7 @@ class AuthController extends Controller
      * Log the user out
      * @param Request $request
      * @return JsonResponse
+     * @throws \Exception
      */
     public function logout(Request $request): JsonResponse
     {
@@ -94,8 +90,7 @@ class AuthController extends Controller
                 'message' => 'User logged out'
             ]);
         } catch (\Exception $exception) {
-            // TODO: Handle exceptions in a middleware and send appropriate responses
-            return response()->json([$exception->getMessage()], 500);
+           throw $exception;
         }
     }
 
@@ -103,6 +98,7 @@ class AuthController extends Controller
      * Send the password reset link
      * @param Request $request
      * @return JsonResponse
+     * @throws ValidationException
      */
     public function sendPasswordResetLink(Request $request): JsonResponse
     {
@@ -119,11 +115,16 @@ class AuthController extends Controller
             }
 
         } catch (\Exception $exception) {
-            // TODO: Handle exceptions in a middleware and send appropriate responses
-            return response()->json([$exception->getMessage()], 500);
+            throw $exception;
         }
     }
 
+    /**
+     * Reset user password after verifying the token
+     * @param Request $request
+     * @return JsonResponse
+     * @throws ValidationException
+     */
     public function resetPassword(Request $request): JsonResponse
     {
         try {
@@ -141,13 +142,12 @@ class AuthController extends Controller
                     'message' => "Password updated"
                 ]);
             } elseif ($status === Password::INVALID_TOKEN){
-                throw new \Exception("Invalid reset token");
+                throw new ValidationException ("Invalid reset token");
             } else {
                 throw new \Exception("Error resetting password");
             }
         } catch (\Exception $exception) {
-            // TODO: Handle exceptions in a middleware and send appropriate responses
-            return response()->json([$exception->getMessage()], 500);
+            throw $exception;
         }
     }
 }
