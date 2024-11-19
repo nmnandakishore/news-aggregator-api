@@ -45,7 +45,7 @@ class AuthController extends Controller
         try {
             $this->validationService->validate($request->all(), User::$createRules);
             $user = $this->userService->create($request->name, $request->email, $request->password);
-            return $this->responseService->sendJson('User created', null, false, HttpResponse::HTTP_CREATED);
+            return $this->responseService->sendJson('User registered', null, false, HttpResponse::HTTP_CREATED);
         } catch (\Exception $exception) {
             throw $exception;
         }
