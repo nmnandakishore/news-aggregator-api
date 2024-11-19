@@ -38,6 +38,7 @@ return [
     'api_key' => [
         'news_api' => env('API_KEY_NEWS_API'),
         'guardian_api' => env('API_KEY_GUARDIAN'),
+        'ny_times_api' => env('API_KEY_NY_TIMES'),
     ],
 
 ];
