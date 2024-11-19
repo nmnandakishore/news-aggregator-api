@@ -14,18 +14,18 @@ return new class extends Migration
         Schema::create('news', function (Blueprint $table) {
             $table->id()->autoIncrement();
             $table->timestamps();
-            $table->text("title");
-            $table->text("description")->nullable();
+            $table->text("title")->fulltext();
+            $table->text("description")->nullable()->fulltext();
             $table->text("image")->nullable();
             $table->text("url");
-            $table->text("content");
-            $table->string("author")->nullable();
+            $table->text("content")->fulltext();
+            $table->string("author")->index()->nullable();
             $table->string("provider");
             $table->string("language")->nullable();
             $table->string("tags")->nullable();
             $table->string("country")->nullable();
             $table->datetime("published_at")->nullable();
-            $table->string("category");
+            $table->string("category")->index();
             $table->string("source")->nullable();
 
 //            $table->foreign("category")->references("name")->on("categories");

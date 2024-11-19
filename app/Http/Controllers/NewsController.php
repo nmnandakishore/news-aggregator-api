@@ -8,6 +8,7 @@ use App\Services\ValidationService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use function PHPUnit\Framework\isNull;
 
 class NewsController extends Controller
 {
@@ -49,14 +50,15 @@ class NewsController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function filter(Request $request): JsonResponse
+    public function listFiltered(Request $request): JsonResponse
     {
         try {
             $news = $this->newsService->filter(
                 $request->keyword,
                 $request->date,
-                $request->category,
-                $request->source,
+                $request->category ? [$request->category] : null,
+                $request->source ? [$request->source] : null,
+                null,
                 $request->integer('page'),
                 $request->integer('pageSize')
             );
@@ -82,6 +84,30 @@ class NewsController extends Controller
         }
     }
 
-//    TODO: Create function to list news based on user preference
+    /**
+     * List preferred news
+     * @param Request $request
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function listPersonalized(Request $request): JsonResponse
+    {
+        try {
+            $preferredNews = $this->newsService->listPersonalized($request->user(),$request->integer('page'),$request->integer('pageSize'));
+            return $this->responseService->sendJson(null, $preferredNews, true);
+        } catch (Exception $exception){
+            throw $exception;
+        }
+    }
 
+    public function getFilters(Request $request): JsonResponse
+    {
+        try {
+            $filters = $this->newsService->getFilters();
+            return $this->responseService->sendJson(null, $filters);
+        } catch (Exception $exception){
+            throw $exception;
+        }
+
+    }
 }

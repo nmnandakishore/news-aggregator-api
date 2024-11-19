@@ -14,18 +14,20 @@ class ResponseService
      * @param bool $flat
      * @return JsonResponse
      */
-    public function sendJson($message=null, $data=null, $flat=false): JsonResponse
+    public function sendJson($message = null, $data = null, $flat = false, $responseCode = 200): JsonResponse
     {
-       $responseBody = [
-           'message' => $message,
-       ];
-       if ($data) {
-           $responseBody['data'] = $data;
-       }
-       if($flat){
-           $responseBody = $data;
-       }
-       return response()->json($responseBody);
-   }
+        if ($message) {
+            $responseBody = [
+                'message' => $message,
+            ];
+        }
+        if ($data) {
+            $responseBody['data'] = $data;
+        }
+        if ($flat) {
+            $responseBody = $data;
+        }
+        return response()->json($responseBody)->setStatusCode($responseCode);
+    }
 
 }

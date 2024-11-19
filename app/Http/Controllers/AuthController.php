@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Services\ResponseService;
 use App\Services\UserService;
 use App\Services\ValidationService;
+use Illuminate\Http\Response as HttpResponse;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
@@ -44,7 +45,7 @@ class AuthController extends Controller
         try {
             $this->validationService->validate($request->all(), User::$createRules);
             $user = $this->userService->create($request->name, $request->email, $request->password);
-            return $this->responseService->sendJson('User created');
+            return $this->responseService->sendJson('User created', null, false, HttpResponse::HTTP_CREATED);
         } catch (\Exception $exception) {
             throw $exception;
         }
