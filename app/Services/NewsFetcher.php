@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Category;use App\Models\News;
+use App\Services\NewsProviders\GuardianAPIProvider;
 use App\Services\NewsProviders\NewsAPIProvider;
 use Carbon\Carbon;use Illuminate\Support\Collection;
 use function Illuminate\Log\log;use function Laravel\Prompts\info;
@@ -12,6 +13,7 @@ class NewsFetcher
 
     private const NEWS_PROVIDERS = [
         NewsAPIProvider::class,
+        GuardianAPIProvider::class,
     ];
 
     /**

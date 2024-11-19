@@ -32,9 +32,8 @@ Route::middleware('auth:sanctum')->prefix('news')->group(function () {
     Route::get('/category/{category}', [NewsController::class, 'listFiltered']);
     Route::get('/search', [NewsController::class, 'listFiltered']);
     Route::get('/filtered', [NewsController::class, 'listFiltered']);
-    Route::get('/preferred', [NewsController::class, 'listPreferred']);
+    Route::get('/personalized', [NewsController::class, 'listPersonalized']);
     Route::get('/{id}', [NewsController::class, 'getById']);
-
 });
 
 //Route::group(['prefix' => 'token', 'middleware' => 'auth:sanctum'], function () {
