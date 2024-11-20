@@ -39,7 +39,7 @@ Run the below command to run the application using docker.
 ./vendor/bin/sail up
 ```
 
-### Run Laravel Scheduled Commads
+### Run Laravel Scheduled Commands
 Run the below command to run scheduled command in dev environment.
 ```bash
 ./vendor/bin/sail artisan schedule:work
@@ -48,3 +48,7 @@ This fetches the news into the database from below APIs once in every minute.
 - NewsAPI .org
 - The Guardian
 - The New York Times API
+
+### Setup Postman for testing
+- Download the postman collection from [here](https://raw.githubusercontent.com/nmnandakishore/news-aggregator-api/12a279d6dee06ebe5819ba64bda9c57b14591f48/News%20Aggregator.postman_collection.json) for testing APIs. 
+- Please note that the API token needs to be sent to protected routes through `Authorization` header as bearer token.
