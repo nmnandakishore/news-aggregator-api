@@ -52,3 +52,4 @@ This fetches the news into the database from below APIs once in every minute.
 ### Setup Postman for testing
 - Download the postman collection from [here](https://raw.githubusercontent.com/nmnandakishore/news-aggregator-api/12a279d6dee06ebe5819ba64bda9c57b14591f48/News%20Aggregator.postman_collection.json) for testing APIs. 
 - Please note that the API token needs to be sent to protected routes through `Authorization` header as bearer token.
+- The openAPI JSON can be accessed at `http://localhost/docs/api.json`
