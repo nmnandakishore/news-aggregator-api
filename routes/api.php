@@ -14,7 +14,7 @@ Route::get('/auth-check', function (Request $request) {
     return "Response from server";
 })->middleware('auth:sanctum');
 
-Route::group(['prefix' => 'user'], function () {
+Route::middleware('throttle:api')->prefix('user')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
@@ -26,7 +26,7 @@ Route::group(['prefix' => 'user'], function () {
     Route::delete('/preferences', [UserController::class, 'removePreferences'])->middleware('auth:sanctum');
 });
 
-Route::middleware('auth:sanctum')->prefix('news')->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:api'])->prefix('news')->group(function () {
     Route::get('/all', [NewsController::class, 'listAll']);
     Route::get('/filters', [NewsController::class, 'getFilters']);
     Route::get('/category/{category}', [NewsController::class, 'listFiltered']);
