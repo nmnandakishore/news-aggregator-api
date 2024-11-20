@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
          $this->call([
              UserSeeder::class,
              NewsSeeder::class,
-             UserPreferenceSeeder::class
          ]);
     }
 }
