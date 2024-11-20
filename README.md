@@ -27,6 +27,12 @@ Run the below command to run migrations.
 ./vendor/bin/sail artisan migrate
 ```
 
+### Run seeders
+Run the below command to run migrations.
+```bash
+./vendor/bin/sail artisan db:seed
+```
+
 ### Run the application
 Run the below command to run the application using docker.
 ```bash
