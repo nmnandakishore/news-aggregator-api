@@ -35,7 +35,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Register a new user
+     * User Registration
      * @param Request $request
      * @return JsonResponse
      * @throws \Exception
@@ -45,14 +45,14 @@ class AuthController extends Controller
         try {
             $this->validationService->validate($request->all(), User::$createRules);
             $user = $this->userService->create($request->name, $request->email, $request->password);
-            return $this->responseService->sendJson('User registered', null, false, HttpResponse::HTTP_CREATED);
+            return response()->json($this->responseService->buildResponse('User registered', null, false), HttpResponse::HTTP_CREATED);
         } catch (\Exception $exception) {
             throw $exception;
         }
     }
 
     /**
-     * Login user with email and password
+     * User Login
      * @param Request $request
      * @return JsonResponse
      * @throws AuthenticationException
@@ -61,11 +61,19 @@ class AuthController extends Controller
     public function login(Request $request): JsonResponse
     {
         try {
+            //For Open API
+            /** @var "UserName" $username
+             * @example "user@example.com"
+             * */
+            $username = $request->get('email');
+            /** @var Password $password */
+            $password = $request->get('password');
+
             $this->validationService->validate($request->all(), User::$loginRules);
 
             if (Auth::attempt($request->only('email', 'password'))) {
                 $apiToken = $request->user()->createToken('api_token')->plainTextToken;
-                return $this->responseService->sendJson('User logged in', ['api_token' => $apiToken]);
+                return response()->json($this->responseService->buildResponse('User logged in', ['api_token' => $apiToken]));
             } else {
                 throw(new AuthenticationException("Invalid credentials"));
             }
@@ -76,7 +84,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Log the user out
+     * User Logout
      * @param Request $request
      * @return JsonResponse
      * @throws \Exception
@@ -84,15 +92,17 @@ class AuthController extends Controller
     public function logout(Request $request): JsonResponse
     {
         try {
+            //For Open API
+
             $request->user()->currentAccessToken()->delete();
-            return $this->responseService->sendJson('User logged out');
+            return response()->json($this->responseService->buildResponse('User logged out'));
         } catch (\Exception $exception) {
            throw $exception;
         }
     }
 
     /**
-     * Send the password reset link
+     * Forgot Password
      * @param Request $request
      * @return JsonResponse
      * @throws ValidationException
@@ -104,7 +114,7 @@ class AuthController extends Controller
             $status = Password::sendResetLink($request->only('email'));
 
             if ($status === Password::RESET_LINK_SENT) {
-                return $this->responseService->sendJson('Password reset link sent');
+                return $this->responseService->buildResponse('Password reset link sent');
             } else {
                 throw new \Exception("Error sending Password reset link");
             }
@@ -115,7 +125,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Reset user password after verifying the token
+     * Reset Password
      * @param Request $request
      * @return JsonResponse
      * @throws ValidationException
@@ -133,7 +143,7 @@ class AuthController extends Controller
                     $user->save();
                 });
             if ($status === Password::PASSWORD_RESET) {
-                return $this->responseService->sendJson('Password updated');
+                return response()->json($this->responseService->buildResponse('Password updated'));
             } elseif ($status === Password::INVALID_TOKEN){
                 throw new InvalidParameterException("Invalid reset token");
             } else {

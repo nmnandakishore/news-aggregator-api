@@ -34,11 +34,11 @@ class UserController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function listPreferences(Request $request)
+    public function listPreferences(Request $request): JsonResponse
     {
         try {
             $preferences = $this->userService->listPreferences($request->user());
-            return $this->responseService->sendJson('user preferences', $preferences);
+            return response()->json($this->responseService->buildResponse('user preferences', $preferences));
         } catch (Exception $exception) {
             throw $exception;
         }
@@ -67,9 +67,10 @@ class UserController extends Controller
             }
 
             if($this->userService->updatePreferences($preferences, $request->user())){
-                return $this->responseService->sendJson('Preferences Updated', null, false, HttpResponse::HTTP_CREATED);
+                return response()->json($this->responseService->buildResponse('Preferences Updated', null, false), HttpResponse::HTTP_CREATED);
             }
-            return $this->responseService->sendJson('user preferences not updated');
+
+            return response()->json($this->responseService->buildResponse('user preferences not updated'), HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
 
         } catch (Exception $exception) {
             throw $exception;

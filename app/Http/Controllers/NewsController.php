@@ -38,7 +38,7 @@ class NewsController extends Controller
     {
         try {
             $news = $this->newsService->listAll($request->integer('page'), $request->integer('pageSize'));
-            return $this->responseService->sendJson(null, $news, true);
+            return response()->json($this->responseService->buildResponse(null, $news, true));
         } catch (Exception $exception) {
             throw $exception;
         }
@@ -62,7 +62,7 @@ class NewsController extends Controller
                 $request->integer('page'),
                 $request->integer('pageSize')
             );
-            return $this->responseService->sendJson(null, $news, true);
+            return response()->json($this->responseService->buildResponse(null, $news, true));
         } catch (Exception $exception) {
             throw $exception;
         }
@@ -78,7 +78,7 @@ class NewsController extends Controller
     {
         try {
             $news = $this->newsService->getById($request->id);
-            return $this->responseService->sendJson(null, $news, true);
+            return response()->json($this->responseService->buildResponse(null, $news, true));
         } catch (Exception $exception) {
             throw $exception;
         }
@@ -94,7 +94,7 @@ class NewsController extends Controller
     {
         try {
             $preferredNews = $this->newsService->listPersonalized($request->user(),$request->integer('page'),$request->integer('pageSize'));
-            return $this->responseService->sendJson(null, $preferredNews, true);
+            return response()->json($this->responseService->buildResponse(null, $preferredNews, true));
         } catch (Exception $exception){
             throw $exception;
         }
@@ -104,7 +104,7 @@ class NewsController extends Controller
     {
         try {
             $filters = $this->newsService->getFilters();
-            return $this->responseService->sendJson(null, $filters);
+            return response()->json($this->responseService->buildResponse(null, $filters));
         } catch (Exception $exception){
             throw $exception;
         }

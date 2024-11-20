@@ -12,10 +12,11 @@ class ResponseService
      * @param null $message
      * @param null $data
      * @param bool $flat
-     * @return JsonResponse
+     * @return array
      */
-    public function sendJson($message = null, $data = null, $flat = false, $responseCode = 200): JsonResponse
+    public function buildResponse($message = null, $data = null, bool $flat = false): array
     {
+        $responseBody = [];
         if ($message) {
             $responseBody = [
                 'message' => $message,
@@ -27,7 +28,8 @@ class ResponseService
         if ($flat) {
             $responseBody = $data;
         }
-        return response()->json($responseBody)->setStatusCode($responseCode);
+
+        return $responseBody;
     }
 
 }
