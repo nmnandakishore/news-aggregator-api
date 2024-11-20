@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
+use App\Models\UserPreference;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -41,4 +43,11 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    /*public function configure(): Factory|UserFactory
+    {
+        return $this->afterCreating(function (User $user) {
+            $user->preferences()->saveMany(UserPreference::factory()->count(rand(1,3))->create());
+        });
+    }*/
 }
